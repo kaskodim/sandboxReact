@@ -11,6 +11,9 @@ type SelectProps = {
     placeholder: string
 }
 
+// todo анимация стрелки
+// todo клик из вне сворачивает опции
+
 export const Select = ({
                            value,
                            onChange,
@@ -39,7 +42,7 @@ export const Select = ({
                        readOnly
                 />
                 <IconWrapper>
-                    {isOpen ? <ExpandMoreIcon color={'info'}/> : <ExpandLessIcon/>}
+                    {isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon/>}
                 </IconWrapper>
             </InputWrapper>
 
@@ -60,8 +63,7 @@ export const Select = ({
 
 const SelectWrapper = styled.div`
     margin: 30px;
-    padding: 10px;
-
+    position: relative;
 `
 
 const InputWrapper = styled.label`
@@ -100,19 +102,31 @@ const OptionsList = styled.div`
     border-radius: 5px;
     box-shadow: inset 0 0 2px;
     background: #ececec;
-    
+    position: absolute;
+    max-width: 100%;
+    z-index: 10;
+    max-height: 400px; 
+    overflow-y: auto;
+    width: 100%; 
+    box-sizing: border-box;
+
 `
 
 const OptionItem = styled.li<{ isSelected: boolean }>`
 
     list-style-type: none;
+
     padding: 10px;
     border-radius: 5px;
+ 
     font-size: 14px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+   
 
+
+    
     ${({isSelected}) => isSelected && `
         background-color: #B8B8B8FF;
         box-shadow: inset 0 0 2px;

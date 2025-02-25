@@ -15,6 +15,8 @@ const initialState: ListOfCities[] = [
     {name: 'Казань', value: 'kazan'},
     {name: 'Нижний Новгород', value: 'nizhny_novgorod'},
     {name: 'Челябинск', value: 'chelyabinsk'},
+
+
 ]
 
 
@@ -23,11 +25,14 @@ export const Parent = () => {
     const [currentValue, setCurrentValue] = useState('');
 
     return (
-        <Select value={currentValue}
-                placeholder={'выбери город...'}
-                onChange={setCurrentValue}
-                options={initialState}
-        />
+        <div>
+            <Select value={currentValue}
+                    placeholder={'выбери город...'}
+                    onChange={setCurrentValue}
+                    options={initialState}
+            />
+
+        </div>
     );
 };
 
