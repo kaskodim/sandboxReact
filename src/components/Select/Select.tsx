@@ -1,4 +1,4 @@
-import React,  {useEffect, useState, KeyboardEvent} from 'react';
+import React, {useEffect, useState, KeyboardEvent} from 'react';
 import {ListOfCities} from '../../Parent';
 import styled from 'styled-components';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -36,38 +36,23 @@ export const Select = ({
             console.log('еще не допер как это работает')
         }
     }
-
-
     const onKeyUpHandler = (e: KeyboardEvent<HTMLInputElement>) => {
 
-
-        if (e.key === 'ArrowDown'){
+        if (e.key === 'ArrowDown') {
             setIsOpen(true)
-            setSelectIndex(   index=> index < options.length-1 ? index + 1 : 0   );
-
-            console.log('down')
-            // добавь сюда прокрутку вниз
+            setSelectIndex(index => index < options.length - 1 ? index + 1 : 0);
         }
-
-        if (e.key === 'ArrowUp'){
+        if (e.key === 'ArrowUp') {
             setIsOpen(true)
-            setSelectIndex(  index=> index > 0 ? index - 1 : options.length - 1                                 )
-
-            console.log('up')
-            // добавь сюда прокрутку вверх
+            setSelectIndex(index => index > 0 ? index - 1 : options.length - 1)
         }
-
-        if (e.key === 'Enter'){
-            console.log('enter')
-
-            onChangeHandler(  options[selectIndex].value               )
-
-
-
+        if (e.key === 'Enter' && isOpen) {
+            onChangeHandler(options[selectIndex].value)
             setIsOpen(false)
-            // установи выбранное значение
         }
-
+        if (e.key === 'Escape' && isOpen) {
+            setIsOpen(false)
+        }
     }
 
     useEffect(() => {
@@ -78,7 +63,7 @@ export const Select = ({
         if (selectIndex !== -1 && isOpen) {
             const selectedElement = document.getElementById(`optionsId-${selectIndex}`);
             if (selectedElement) {
-                selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                selectedElement.scrollIntoView({behavior: 'smooth', block: 'center'});
             }
         }
     }, [selectIndex, isOpen]);
@@ -96,12 +81,12 @@ export const Select = ({
                        onKeyUp={onKeyUpHandler}
                 />
                 <IconWrapper isOpen={isOpen}>
-                   <ExpandMoreIcon/>
+                    <ExpandMoreIcon/>
                 </IconWrapper>
             </InputWrapper>
 
             {isOpen && <OptionsList>
-                {options.map((el, index)=>
+                {options.map((el, index) =>
                     <OptionItem key={el.value}
                                 id={`optionsId-${index}`}
                                 onClick={() => onChangeHandler(el.value)}
@@ -143,20 +128,20 @@ const Input = styled.input`
     text-overflow: ellipsis;
     background: #ececec;
     user-select: none;
-    
-    
+
+
     &:focus {
         border: 1px solid blue;
     }
 `
 
-const IconWrapper = styled.div<{isOpen: boolean}>`
+const IconWrapper = styled.div<{ isOpen: boolean }>`
     position: absolute;
     right: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transform:  rotate(${  ({isOpen})  => isOpen ? '180deg' : '0deg' }  )        ;
+    transform: rotate(${({isOpen}) => isOpen ? '180deg' : '0deg'});
     transition: transform 0.4s ease;
 `
 
@@ -177,29 +162,26 @@ const OptionsList = styled.div`
 
 `
 
-const OptionItem = styled.li<{ isSelected: boolean , isHover: boolean }>`
+const OptionItem = styled.li<{ isSelected: boolean, isHover: boolean }>`
 
     list-style-type: none;
     padding: 10px;
     border-radius: 5px;
-    
+
     font-size: 14px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     user-select: none;
-    
+
     ${({isSelected}) => isSelected && `
         background-color: #8C8C8CFF;
         box-shadow: inset 0 0 2px;
     `}
-
     ${({isHover}) => isHover && `
         background: #ffffff;
         box-shadow: inset 0 0 2px;
     `}
-    
-    
     &:hover {
         background: #ffffff;
         box-shadow: inset 0 0 2px;
