@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React,  {useEffect, useState, KeyboardEvent} from 'react';
 import {ListOfCities} from '../../Parent';
 import styled from 'styled-components';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -18,6 +18,8 @@ export const Select = ({
                        }: SelectProps) => {
 
     const [isOpen, setIsOpen] = useState(false);
+    const [selectIndex, setSelectIndex] = useState<number>(-1);
+
 
     const onChangeHandler = (value: string) => {
         const findValue = options.find(n => n.value === value)
@@ -25,6 +27,7 @@ export const Select = ({
             onChange(findValue.name)
         }
         setIsOpen(false);
+        setSelectIndex(-1);
     }
     const ClickOutsideHandler = (e: MouseEvent) => {
         const findInput = document.getElementById('input')
@@ -34,9 +37,51 @@ export const Select = ({
         }
     }
 
+
+    const onKeyUpHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+
+
+        if (e.key === 'ArrowDown'){
+            setIsOpen(true)
+            setSelectIndex(   index=> index < options.length-1 ? index + 1 : 0   );
+
+            console.log('down')
+            // добавь сюда прокрутку вниз
+        }
+
+        if (e.key === 'ArrowUp'){
+            setIsOpen(true)
+            setSelectIndex(  index=> index > 0 ? index - 1 : options.length - 1                                 )
+
+            console.log('up')
+            // добавь сюда прокрутку вверх
+        }
+
+        if (e.key === 'Enter'){
+            console.log('enter')
+
+            onChangeHandler(  options[selectIndex].value               )
+
+
+
+            setIsOpen(false)
+            // установи выбранное значение
+        }
+
+    }
+
     useEffect(() => {
         document.addEventListener('click', ClickOutsideHandler)
     }, [])
+
+    useEffect(() => {
+        if (selectIndex !== -1 && isOpen) {
+            const selectedElement = document.getElementById(`optionsId-${selectIndex}`);
+            if (selectedElement) {
+                selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }, [selectIndex, isOpen]);
 
 
     return (
@@ -47,8 +92,8 @@ export const Select = ({
                        placeholder={placeholder}
                        value={value}
                        onClick={() => setIsOpen(!isOpen)}
-                       onMouseDown={(e) => e.preventDefault()} // Отмена выделения текста
                        readOnly
+                       onKeyUp={onKeyUpHandler}
                 />
                 <IconWrapper isOpen={isOpen}>
                    <ExpandMoreIcon/>
@@ -56,10 +101,12 @@ export const Select = ({
             </InputWrapper>
 
             {isOpen && <OptionsList>
-                {options.map(el =>
+                {options.map((el, index)=>
                     <OptionItem key={el.value}
+                                id={`optionsId-${index}`}
                                 onClick={() => onChangeHandler(el.value)}
                                 isSelected={value === el.name}
+                                isHover={index === selectIndex}
                     >
                         {el.name}
                     </OptionItem>
@@ -130,7 +177,7 @@ const OptionsList = styled.div`
 
 `
 
-const OptionItem = styled.li<{ isSelected: boolean }>`
+const OptionItem = styled.li<{ isSelected: boolean , isHover: boolean }>`
 
     list-style-type: none;
     padding: 10px;
@@ -146,8 +193,15 @@ const OptionItem = styled.li<{ isSelected: boolean }>`
         background-color: #8C8C8CFF;
         box-shadow: inset 0 0 2px;
     `}
+
+    ${({isHover}) => isHover && `
+        background: #ffffff;
+        box-shadow: inset 0 0 2px;
+    `}
+    
+    
     &:hover {
-        background: #bcbcbc;
+        background: #ffffff;
         box-shadow: inset 0 0 2px;
     }
 `
