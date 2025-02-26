@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ListOfCities} from '../../Parent';
 import styled from 'styled-components';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 type SelectProps = {
@@ -10,9 +9,6 @@ type SelectProps = {
     options: ListOfCities[]
     placeholder: string
 }
-
-// todo анимация стрелки
-// todo клик из вне сворачивает опции
 
 export const Select = ({
                            value,
@@ -30,6 +26,18 @@ export const Select = ({
         }
         setIsOpen(false);
     }
+    const ClickOutsideHandler = (e: MouseEvent) => {
+        const findInput = document.getElementById('input')
+        if (findInput && !findInput.contains(e.target as Node)) {
+            setIsOpen(false)
+            console.log('еще не допер как это работает')
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('click', ClickOutsideHandler)
+    }, [])
+
 
     return (
         <SelectWrapper>
@@ -39,10 +47,11 @@ export const Select = ({
                        placeholder={placeholder}
                        value={value}
                        onClick={() => setIsOpen(!isOpen)}
+                       onMouseDown={(e) => e.preventDefault()} // Отмена выделения текста
                        readOnly
                 />
-                <IconWrapper>
-                    {isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon/>}
+                <IconWrapper isOpen={isOpen}>
+                   <ExpandMoreIcon/>
                 </IconWrapper>
             </InputWrapper>
 
@@ -86,15 +95,22 @@ const Input = styled.input`
     overflow: hidden;
     text-overflow: ellipsis;
     background: #ececec;
-
+    user-select: none;
+    
+    
     &:focus {
         border: 1px solid blue;
     }
 `
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<{isOpen: boolean}>`
     position: absolute;
     right: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform:  rotate(${  ({isOpen})  => isOpen ? '180deg' : '0deg' }  )        ;
+    transition: transform 0.4s ease;
 `
 
 const OptionsList = styled.div`
@@ -105,34 +121,33 @@ const OptionsList = styled.div`
     position: absolute;
     max-width: 100%;
     z-index: 10;
-    max-height: 400px; 
+    max-height: 400px;
     overflow-y: auto;
-    width: 100%; 
+    width: 100%;
     box-sizing: border-box;
+    padding: 5px;
+    user-select: none;
 
 `
 
 const OptionItem = styled.li<{ isSelected: boolean }>`
 
     list-style-type: none;
-
     padding: 10px;
     border-radius: 5px;
- 
+    
     font-size: 14px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-   
-
-
+    user-select: none;
     
     ${({isSelected}) => isSelected && `
-        background-color: #B8B8B8FF;
+        background-color: #8C8C8CFF;
         box-shadow: inset 0 0 2px;
     `}
     &:hover {
-        background: #eaeaea;
+        background: #bcbcbc;
         box-shadow: inset 0 0 2px;
     }
 `

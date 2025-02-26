@@ -15,8 +15,6 @@ const initialState: ListOfCities[] = [
     {name: 'Казань', value: 'kazan'},
     {name: 'Нижний Новгород', value: 'nizhny_novgorod'},
     {name: 'Челябинск', value: 'chelyabinsk'},
-
-
 ]
 
 
